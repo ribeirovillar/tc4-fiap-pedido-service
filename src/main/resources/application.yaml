@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: tc4-fiap-pedido-service
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5435/orderdb}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+
+server:
+  port: ${SERVER_PORT:8084}
+
+rabbitmq:
+  queue:
+    name: ${RABBITMQ_QUEUE_NAME:order-queue}
+    durable: ${RABBITMQ_QUEUE_DURABLE:true}
+
+web:
+    client:
+        fiap-cliente-service:
+            url: ${FIAP_CLIENTE_SERVICE_URL:http://localhost:8080}
+        fiap-produto-service:
+            url: ${FIAP_PRODUTO_SERVICE_URL:http://localhost:8081}
+        fiap-estoque-service:
+            url: ${FIAP_ESTOQUE_SERVICE_URL:http://localhost:8082}
+

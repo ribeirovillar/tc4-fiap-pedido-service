@@ -1,0 +1,42 @@
+services:
+
+  fiap-pedido-postgres:
+    image: postgres:16
+    container_name: fiap-pedido-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: orderdb
+    ports:
+      - "5435:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - pedido-network
+
+  fiap-pedido-service:
+    build: .
+    container_name: fiap-pedido-service
+    depends_on:
+      fiap-pedido-postgres:
+        condition: service_healthy
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+      RABBITMQ_QUEUE_NAME: order-queue
+      RABBITMQ_QUEUE_DURABLE: true
+      SERVER_PORT: 8084
+    ports:
+      - "8084:8084"
+    restart: on-failure
+    networks:
+      - pedido-network
+
+volumes:
+  pgdata:
+
+networks:
+  pedido-network:
+    driver: bridge
