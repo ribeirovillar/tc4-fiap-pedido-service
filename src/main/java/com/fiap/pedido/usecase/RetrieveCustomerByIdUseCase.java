@@ -1,6 +1,7 @@
 package com.fiap.pedido.usecase;
 
 import com.fiap.pedido.domain.Customer;
+import com.fiap.pedido.exception.CustomerException;
 import com.fiap.pedido.gateway.CustomerGateway;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,6 @@ public class RetrieveCustomerByIdUseCase {
 
     public Customer execute(UUID customerId) {
         return customerGateway.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + customerId));
+                .orElseThrow(() -> new CustomerException("Failed to retrieve customer with ID: " + customerId));
     }
 }

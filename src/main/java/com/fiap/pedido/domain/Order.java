@@ -20,10 +20,10 @@ public class Order implements Serializable {
     String customerName;
     String customerCpf;
     String cardNumber;
-    String status;
+    OrderStatus status;
     List<Item> items;
-    String paymentId;
-    String paymentStatus;
+    UUID paymentId;
+    PaymentStatus paymentStatus;
     BigDecimal paymentAmount;
 
 }

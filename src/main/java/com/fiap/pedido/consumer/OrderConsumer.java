@@ -22,16 +22,11 @@ public class OrderConsumer {
 
     @RabbitListener(queues = "${rabbitmq.queue.name}")
     public void receiveOrder(String orderMessage) {
-        try {
-            log.info("Received order message: {}", orderMessage);
-            processOrderUseCase.execute(orderDeserialization(orderMessage));
-        } catch (Exception e) {
-            log.error("Error processing order message: {}", e.getMessage(), e);
-        }
-
+        log.info("Received order message: {}", orderMessage);
+        processOrderUseCase.execute(orderMessageDeserialization(orderMessage));
     }
 
-    private Order orderDeserialization(String message) {
+    private Order orderMessageDeserialization(String message) {
         log.info("Deserializing the order message: {}", message);
         try {
             return objectMapper.readValue(message, Order.class);

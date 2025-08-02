@@ -7,7 +7,7 @@ CREATE TABLE orders (
     customer_cpf VARCHAR(11),
     card_number VARCHAR(255) NOT NULL,
     status VARCHAR(50) NOT NULL,
-    payment_id VARCHAR(255),
+    payment_id UUID,
     payment_status VARCHAR(50),
     payment_amount DECIMAL(19,2)
 );

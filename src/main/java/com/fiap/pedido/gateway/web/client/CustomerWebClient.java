@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -20,8 +19,8 @@ public class CustomerWebClient {
         this.restTemplate = restTemplate;
     }
 
-    public Optional<CustomerResponseDTO> findCustomerById(UUID customerId) {
+    public CustomerResponseDTO findCustomerById(UUID customerId) {
         String endpoint = String.format("%s/customers/%s", url, customerId);
-        return Optional.ofNullable(restTemplate.getForObject(endpoint, CustomerResponseDTO.class));
+        return restTemplate.getForObject(endpoint, CustomerResponseDTO.class);
     }
 }

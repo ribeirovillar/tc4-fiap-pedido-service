@@ -23,15 +23,10 @@ public class ProductWebClientGateway implements ProductGateway {
 
     @Override
     public List<Product> findAllProductsBySkus(List<String> skus) {
-        try {
-            log.info("Find all products by skus {}", skus);
-            return productWebClient.findAllProductsBySkus(skus)
-                    .stream()
-                    .map(orderItemMapper::map)
-                    .toList();
-        } catch (Exception e) {
-            log.error("Error retrieving products by skus: {}", skus, e);
-        }
-        return List.of();
+        log.info("Find all products by skus {}", skus);
+        return productWebClient.findAllProductsBySkus(skus)
+                .stream()
+                .map(orderItemMapper::map)
+                .toList();
     }
 }

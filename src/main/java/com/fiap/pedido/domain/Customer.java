@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
@@ -17,7 +16,5 @@ public class Customer {
     private UUID id;
     private String fullName;
     private String cpf;
-    private LocalDate birthDate;
-    private Address address;
 
 }

@@ -13,19 +13,15 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-public class LoadCustomerDetails implements LoadOrderDataStrategy {
+public class EnrichCustomerDetails implements EnrichOrderDataStrategy {
 
     RetrieveCustomerByIdUseCase retrieveCustomerByIdUseCase;
 
     @Override
-    public void load(Order order) {
+    public void enrich(Order order) {
         log.info("Loading Customer Details for Order {}", order.toString());
-        try{
-            Customer customer = retrieveCustomerByIdUseCase.execute(order.getCustomerId());
-            order.setCustomerCpf(customer.getCpf());
-            order.setCustomerName(customer.getFullName());
-        } catch (Exception e){
-            log.error("Error retrieving customer by ID: {}", order.getCustomerId(), e);
-        }
+        Customer customer = retrieveCustomerByIdUseCase.execute(order.getCustomerId());
+        order.setCustomerCpf(customer.getCpf());
+        order.setCustomerName(customer.getFullName());
     }
 }

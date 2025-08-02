@@ -24,12 +24,7 @@ public class CustomerWebClientGateway implements CustomerGateway {
 
     @Override
     public Optional<Customer> findById(UUID customerId) {
-        try {
-            return customerWebClient.findCustomerById(customerId)
-                    .map(customerMapper::map);
-        } catch (Exception e) {
-            log.error("Error retrieving customer by ID: {}", customerId, e);
-        }
-        return Optional.empty();
+        return Optional.of(customerWebClient.findCustomerById(customerId))
+                .map(customerMapper::map);
     }
 }

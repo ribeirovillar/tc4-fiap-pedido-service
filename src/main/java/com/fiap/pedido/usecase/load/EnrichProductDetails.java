@@ -3,6 +3,7 @@ package com.fiap.pedido.usecase.load;
 import com.fiap.pedido.domain.Item;
 import com.fiap.pedido.domain.Order;
 import com.fiap.pedido.domain.Product;
+import com.fiap.pedido.exception.ProductException;
 import com.fiap.pedido.usecase.RetrieveAllProductsBySkuUseCase;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +18,22 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-public class LoadProductDetails implements LoadOrderDataStrategy {
+public class EnrichProductDetails implements EnrichOrderDataStrategy {
 
     RetrieveAllProductsBySkuUseCase retrieveAllProductsBySkuUseCase;
 
     @Override
-    public void load(Order order) {
+    public void enrich(Order order) {
         log.info("Loading Product Details for Order {}", order.toString());
         List<String> skus = order.getItems().stream().map(Item::getSku).toList();
         List<Product> products = retrieveAllProductsBySkuUseCase.execute(skus);
+
+        if (skus.size() != products.size()) {
+            List<String> skusFound = products.stream().map(Product::getSku).toList();
+            List<String> skusNotFound = skus.stream().filter(sku -> !skusFound.contains(sku)).toList();
+            throw new ProductException("Invalid sku(s): " + String.join(", ", skusNotFound));
+        }
+
         products.forEach(product -> order
                 .getItems()
                 .stream()

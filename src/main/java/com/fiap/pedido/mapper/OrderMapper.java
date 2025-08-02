@@ -4,6 +4,7 @@ import com.fiap.pedido.domain.Item;
 import com.fiap.pedido.domain.Order;
 import com.fiap.pedido.gateway.database.jpa.entity.OrderEntity;
 import com.fiap.pedido.gateway.database.jpa.entity.OrderItemEntity;
+import com.fiap.pedido.gateway.web.json.PaymentDTO;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,6 +20,8 @@ public interface OrderMapper {
     OrderEntity map(Order order);
 
     Order map(OrderEntity orderEntity);
+
+    PaymentDTO mapToDto(Order order);
 
     @AfterMapping
     default void mapItems(Order order, @MappingTarget OrderEntity orderEntity) {

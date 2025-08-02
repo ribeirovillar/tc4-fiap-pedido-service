@@ -1,35 +1,42 @@
 package com.fiap.pedido.usecase;
 
 import com.fiap.pedido.domain.Order;
+import com.fiap.pedido.domain.OrderStatus;
+import com.fiap.pedido.domain.PaymentStatus;
+import com.fiap.pedido.exception.OrderException;
 import com.fiap.pedido.gateway.OrderGateway;
+import com.fiap.pedido.usecase.validation.ValidateOrderStrategy;
 import jakarta.transaction.Transactional;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
+import java.util.List;
 
 @Component
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class CreateOrderUseCase {
 
-    OrderGateway orderGateway;
+    private final OrderGateway orderGateway;
+    private final List<ValidateOrderStrategy> validateOrderStrategies;
+
+    public CreateOrderUseCase(OrderGateway orderGateway, List<ValidateOrderStrategy> validateOrderStrategies) {
+        this.orderGateway = orderGateway;
+        this.validateOrderStrategies = validateOrderStrategies;
+    }
+
     @Transactional
     public Order execute(Order order) {
-        if (Objects.isNull(order) || Objects.isNull(order.getOrderId())) {
-            log.error("Order id is null or orderId is null");
-            throw new RuntimeException("Order or Order ID cannot be null");
-        }
-        log.info("Creating order {}", order.toString());
+        validateOrderStrategies.forEach(strategy -> strategy.validate(order));
+
+        order.setStatus(OrderStatus.ABERTO);
+        order.setPaymentStatus(PaymentStatus.PENDING);
+
+        log.info("Creating order {}", order);
 
         return orderGateway.save(order)
                 .orElseThrow(() -> {
                             log.error("Order could not be saved: {}", order);
-                            return new RuntimeException("Order could not be saved");
+                            return new OrderException("Order could not be saved");
                         }
                 );
     }

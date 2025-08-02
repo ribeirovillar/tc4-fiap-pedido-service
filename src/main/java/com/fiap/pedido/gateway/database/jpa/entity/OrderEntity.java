@@ -27,7 +27,7 @@ public class OrderEntity {
     List<OrderItemEntity> items;
     String cardNumber;
     String status;
-    String paymentId;
+    UUID paymentId;
     String paymentStatus;
     BigDecimal paymentAmount;
 
