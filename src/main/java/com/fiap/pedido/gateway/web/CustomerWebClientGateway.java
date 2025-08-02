@@ -24,7 +24,7 @@ public class CustomerWebClientGateway implements CustomerGateway {
 
     @Override
     public Optional<Customer> findById(UUID customerId) {
-        return Optional.of(customerWebClient.findCustomerById(customerId))
+        return Optional.ofNullable(customerWebClient.findCustomerById(customerId))
                 .map(customerMapper::map);
     }
 }

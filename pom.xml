@@ -96,7 +96,14 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.11</version>
+                <version>0.8.13</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/configuration/**</exclude>
+                        <exclude>**/mapper/**</exclude>
+                        <exclude>**/client/**</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
