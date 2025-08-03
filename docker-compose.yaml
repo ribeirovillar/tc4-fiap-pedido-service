@@ -1,5 +1,4 @@
 services:
-
   fiap-pedido-postgres:
     image: postgres:16
     container_name: fiap-pedido-postgres
@@ -11,11 +10,16 @@ services:
       - "5435:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - pedido-network
 
   fiap-pedido-service:
-    build: .
+    image: draraujoo/fiap-pedido-service:latest
     container_name: fiap-pedido-service
     depends_on:
       fiap-pedido-postgres:
@@ -27,16 +31,19 @@ services:
       RABBITMQ_PASSWORD: guest
       RABBITMQ_QUEUE_NAME: order-queue
       RABBITMQ_QUEUE_DURABLE: true
-      SERVER_PORT: 8084
+      SPRING_DATASOURCE_URL: jdbc:postgresql://fiap-pedido-postgres:5432/orderdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SERVER_PORT: 8080
     ports:
-      - "8084:8084"
-    restart: on-failure
+      - "8084:8080"
     networks:
       - pedido-network
 
-volumes:
-  pgdata:
-
 networks:
   pedido-network:
+    name: pedido-network
     driver: bridge
+
+volumes:
+  pgdata:
