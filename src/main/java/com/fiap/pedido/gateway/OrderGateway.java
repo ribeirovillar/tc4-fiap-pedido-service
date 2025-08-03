@@ -10,6 +10,7 @@ public interface OrderGateway {
     Optional<Order> save(Order order);
 
     Optional<Order> findOrderByOrderId(UUID orderId);
+    Optional<Order> findOrderByPaymentId(UUID orderId);
 
     List<Order> findAll();
 

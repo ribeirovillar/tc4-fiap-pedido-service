@@ -34,6 +34,11 @@ public class OrderJpaGateway implements OrderGateway {
     }
 
     @Override
+    public Optional<Order> findOrderByPaymentId(UUID paymentId) {
+        return orderRepository.findByPaymentId(paymentId).map(orderMapper::map);
+    }
+
+    @Override
     public List<Order> findAll() {
         return orderRepository.findAll().stream().map(orderMapper::map).toList();
     }

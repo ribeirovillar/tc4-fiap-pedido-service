@@ -1,6 +1,7 @@
 package com.fiap.pedido.configuration;
 
 import com.fiap.pedido.exception.OrderNotFoundException;
+import com.fiap.pedido.exception.OrderStatusException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -11,6 +12,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(OrderStatusException.class)
+    public ResponseEntity<ProblemDetail> handleOrderStatusException(OrderStatusException ex) {
+        log.error("Order status exception occurred", ex);
+        ProblemDetail problemDetail = buildProblemDetail("Order Status Error", HttpStatus.BAD_REQUEST, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
+    }
 
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleOrderNotFoundException(OrderNotFoundException ex) {

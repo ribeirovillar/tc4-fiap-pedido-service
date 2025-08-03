@@ -1,6 +1,7 @@
 package com.fiap.pedido.gateway.web;
 
 import com.fiap.pedido.domain.Order;
+import com.fiap.pedido.domain.PaymentStatus;
 import com.fiap.pedido.gateway.PaymentGateway;
 import com.fiap.pedido.gateway.web.client.PaymentWebClient;
 import com.fiap.pedido.gateway.web.json.PaymentDTO;
@@ -28,5 +29,10 @@ public class PaymentWebClientGateway implements PaymentGateway {
         return Optional
                 .ofNullable(paymentWebClient.processPayment(orderMapper.mapToPaymentDTO(order)))
                 .map(PaymentDTO::getId);
+    }
+
+    @Override
+    public PaymentStatus retrievePaymentStatus(UUID paymentId) {
+        return paymentWebClient.retrievePaymentStatus(paymentId);
     }
 }

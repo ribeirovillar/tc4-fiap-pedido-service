@@ -22,7 +22,7 @@ public class ProcessOrderUseCase {
     UpdateOrderUseCase updateOrderUseCase;
     DeductStockUseCase deductStockUseCase;
     ReturnStockUseCase returnStockUseCase;
-    ProcessPaymentUseCase processPaymentUseCase;
+    InitPaymentUseCase initPaymentUseCase;
     EnrichOrderDetailsUseCase enrichOrderDetailsUseCase;
 
     public void execute(Order order) {
@@ -32,7 +32,7 @@ public class ProcessOrderUseCase {
             createOrderUseCase.execute(order);
             enrichOrderDetailsUseCase.execute(order);
             deductStockUseCase.execute(order);
-            processPaymentUseCase.execute(order);
+            initPaymentUseCase.execute(order);
         } catch (OrderException e) {
           log.error(e.getMessage());
         } catch (InsufficientStockException e) {

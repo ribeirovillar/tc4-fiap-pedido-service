@@ -14,12 +14,12 @@ import java.util.UUID;
 
 @Component
 @Slf4j
-public class ProcessPaymentUseCase {
+public class InitPaymentUseCase {
 
     private final PaymentGateway paymentGateway;
     private final OrderGateway orderGateway;
 
-    public ProcessPaymentUseCase(PaymentGateway paymentGateway, OrderGateway orderGateway) {
+    public InitPaymentUseCase(PaymentGateway paymentGateway, OrderGateway orderGateway) {
         this.paymentGateway = paymentGateway;
         this.orderGateway = orderGateway;
     }
