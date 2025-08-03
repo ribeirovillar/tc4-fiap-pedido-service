@@ -1,5 +1,6 @@
 package com.fiap.pedido.gateway.web.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,8 +16,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PaymentDTO implements Serializable {
 
+    UUID id;
     UUID orderId;
     String customerName;
     String customerCpf;

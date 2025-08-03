@@ -3,6 +3,7 @@ package com.fiap.pedido.gateway.web;
 import com.fiap.pedido.domain.Order;
 import com.fiap.pedido.gateway.PaymentGateway;
 import com.fiap.pedido.gateway.web.client.PaymentWebClient;
+import com.fiap.pedido.gateway.web.json.PaymentDTO;
 import com.fiap.pedido.mapper.OrderMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ public class PaymentWebClientGateway implements PaymentGateway {
 
     @Override
     public Optional<UUID> processPayment(Order order) {
-        return Optional.ofNullable(paymentWebClient.processPayment(orderMapper.mapToDto(order)));
+        return Optional
+                .ofNullable(paymentWebClient.processPayment(orderMapper.mapToPaymentDTO(order)))
+                .map(PaymentDTO::getId);
     }
 }

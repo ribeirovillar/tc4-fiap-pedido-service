@@ -30,13 +30,10 @@ class PaymentWebClientGatewayTest {
 
     private Order testOrder;
     private PaymentDTO paymentDTO;
-    private UUID paymentId;
 
     @BeforeEach
     void setUp() {
         paymentWebClientGateway = new PaymentWebClientGateway(paymentWebClient, orderMapper);
-
-        paymentId = UUID.randomUUID();
 
         testOrder = new Order();
         testOrder.setOrderId(UUID.randomUUID());
@@ -56,66 +53,70 @@ class PaymentWebClientGatewayTest {
 
     @Test
     void processPayment_ShouldReturnPaymentId() {
-        when(orderMapper.mapToDto(testOrder)).thenReturn(paymentDTO);
-        when(paymentWebClient.processPayment(paymentDTO)).thenReturn(paymentId);
+        when(orderMapper.mapToPaymentDTO(testOrder)).thenReturn(paymentDTO);
+        var response = new PaymentDTO();
+        response.setId(UUID.randomUUID());
+        when(paymentWebClient.processPayment(paymentDTO)).thenReturn(response);
 
         Optional<UUID> result = paymentWebClientGateway.processPayment(testOrder);
 
         assertTrue(result.isPresent());
-        assertEquals(paymentId, result.get());
-        verify(orderMapper, times(1)).mapToDto(testOrder);
+        assertEquals(response.getId(), result.get());
+        verify(orderMapper, times(1)).mapToPaymentDTO(testOrder);
         verify(paymentWebClient, times(1)).processPayment(paymentDTO);
     }
 
     @Test
     void processPayment_WhenWebClientReturnsNull_ShouldReturnEmptyOptional() {
-        when(orderMapper.mapToDto(testOrder)).thenReturn(paymentDTO);
+        when(orderMapper.mapToPaymentDTO(testOrder)).thenReturn(paymentDTO);
         when(paymentWebClient.processPayment(paymentDTO)).thenReturn(null);
 
         Optional<UUID> result = paymentWebClientGateway.processPayment(testOrder);
 
         assertFalse(result.isPresent());
-        verify(orderMapper, times(1)).mapToDto(testOrder);
+        verify(orderMapper, times(1)).mapToPaymentDTO(testOrder);
         verify(paymentWebClient, times(1)).processPayment(paymentDTO);
     }
 
     @Test
     void processPayment_WhenWebClientThrowsException_ShouldPropagateException() {
         RuntimeException webClientException = new RuntimeException("Payment service error");
-        when(orderMapper.mapToDto(testOrder)).thenReturn(paymentDTO);
+        when(orderMapper.mapToPaymentDTO(testOrder)).thenReturn(paymentDTO);
         when(paymentWebClient.processPayment(paymentDTO)).thenThrow(webClientException);
 
         RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> paymentWebClientGateway.processPayment(testOrder));
 
         assertEquals("Payment service error", exception.getMessage());
-        verify(orderMapper, times(1)).mapToDto(testOrder);
+        verify(orderMapper, times(1)).mapToPaymentDTO(testOrder);
         verify(paymentWebClient, times(1)).processPayment(paymentDTO);
     }
 
     @Test
     void processPayment_WhenMapperThrowsException_ShouldPropagateException() {
         RuntimeException mapperException = new RuntimeException("Mapping failed");
-        when(orderMapper.mapToDto(testOrder)).thenThrow(mapperException);
+        when(orderMapper.mapToPaymentDTO(testOrder)).thenThrow(mapperException);
 
         RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> paymentWebClientGateway.processPayment(testOrder));
 
         assertEquals("Mapping failed", exception.getMessage());
-        verify(orderMapper, times(1)).mapToDto(testOrder);
+        verify(orderMapper, times(1)).mapToPaymentDTO(testOrder);
         verify(paymentWebClient, never()).processPayment(any());
     }
 
     @Test
     void processPayment_WithNullOrder_ShouldHandleGracefully() {
-        when(orderMapper.mapToDto(null)).thenReturn(null);
-        when(paymentWebClient.processPayment(null)).thenReturn(paymentId);
+        when(orderMapper.mapToPaymentDTO(null)).thenReturn(null);
+        var response = new PaymentDTO();
+        response.setId(UUID.randomUUID());
+        when(paymentWebClient.processPayment(null)).thenReturn(response);
 
         Optional<UUID> result = paymentWebClientGateway.processPayment(null);
 
         assertTrue(result.isPresent());
-        assertEquals(paymentId, result.get());
-        verify(orderMapper, times(1)).mapToDto(null);
+        assertEquals(response.getId(), result.get());
+        verify(orderMapper, times(1)).mapToPaymentDTO(null);
         verify(paymentWebClient, times(1)).processPayment(null);
     }
 
@@ -126,14 +127,16 @@ class PaymentWebClientGatewayTest {
         PaymentDTO minimalDTO = new PaymentDTO();
         minimalDTO.setOrderId(minimalOrder.getOrderId());
 
-        when(orderMapper.mapToDto(minimalOrder)).thenReturn(minimalDTO);
-        when(paymentWebClient.processPayment(minimalDTO)).thenReturn(paymentId);
+        when(orderMapper.mapToPaymentDTO(minimalOrder)).thenReturn(minimalDTO);
+        var response = new PaymentDTO();
+        response.setId(UUID.randomUUID());
+        when(paymentWebClient.processPayment(minimalDTO)).thenReturn(response);
 
         Optional<UUID> result = paymentWebClientGateway.processPayment(minimalOrder);
 
         assertTrue(result.isPresent());
-        assertEquals(paymentId, result.get());
-        verify(orderMapper, times(1)).mapToDto(minimalOrder);
+        assertEquals(response.getId(), result.get());
+        verify(orderMapper, times(1)).mapToPaymentDTO(minimalOrder);
         verify(paymentWebClient, times(1)).processPayment(minimalDTO);
     }
 
@@ -142,40 +145,46 @@ class PaymentWebClientGatewayTest {
         testOrder.setPaymentAmount(BigDecimal.valueOf(250.75));
         paymentDTO.setPaymentAmount(BigDecimal.valueOf(250.75));
 
-        when(orderMapper.mapToDto(testOrder)).thenReturn(paymentDTO);
-        when(paymentWebClient.processPayment(paymentDTO)).thenReturn(paymentId);
+        when(orderMapper.mapToPaymentDTO(testOrder)).thenReturn(paymentDTO);
+        var response = new PaymentDTO();
+        response.setId(UUID.randomUUID());
+        when(paymentWebClient.processPayment(paymentDTO)).thenReturn(response);
 
         Optional<UUID> result = paymentWebClientGateway.processPayment(testOrder);
 
         assertTrue(result.isPresent());
-        assertEquals(paymentId, result.get());
-        verify(orderMapper, times(1)).mapToDto(testOrder);
+        assertEquals(response.getId(), result.get());
+        verify(orderMapper, times(1)).mapToPaymentDTO(testOrder);
         verify(paymentWebClient, times(1)).processPayment(paymentDTO);
     }
 
     @Test
     void processPayment_WithCompleteOrderData_ShouldMapAllFields() {
-        when(orderMapper.mapToDto(testOrder)).thenReturn(paymentDTO);
-        when(paymentWebClient.processPayment(paymentDTO)).thenReturn(paymentId);
+        when(orderMapper.mapToPaymentDTO(testOrder)).thenReturn(paymentDTO);
+        var response = new PaymentDTO();
+        response.setId(UUID.randomUUID());
+        when(paymentWebClient.processPayment(paymentDTO)).thenReturn(response);
 
         Optional<UUID> result = paymentWebClientGateway.processPayment(testOrder);
 
         assertTrue(result.isPresent());
-        assertEquals(paymentId, result.get());
-        verify(orderMapper, times(1)).mapToDto(testOrder);
+        assertEquals(response.getId(), result.get());
+        verify(orderMapper, times(1)).mapToPaymentDTO(testOrder);
         verify(paymentWebClient, times(1)).processPayment(paymentDTO);
     }
 
     @Test
     void processPayment_WhenMapperReturnsNull_ShouldHandleGracefully() {
-        when(orderMapper.mapToDto(testOrder)).thenReturn(null);
-        when(paymentWebClient.processPayment(null)).thenReturn(paymentId);
+        when(orderMapper.mapToPaymentDTO(testOrder)).thenReturn(null);
+        var response = new PaymentDTO();
+        response.setId(UUID.randomUUID());
+        when(paymentWebClient.processPayment(null)).thenReturn(response);
 
         Optional<UUID> result = paymentWebClientGateway.processPayment(testOrder);
 
         assertTrue(result.isPresent());
-        assertEquals(paymentId, result.get());
-        verify(orderMapper, times(1)).mapToDto(testOrder);
+        assertEquals(response.getId(), result.get());
+        verify(orderMapper, times(1)).mapToPaymentDTO(testOrder);
         verify(paymentWebClient, times(1)).processPayment(null);
     }
 }

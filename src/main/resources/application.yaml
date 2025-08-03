@@ -31,5 +31,5 @@ web:
         fiap-estoque-service:
             url: ${FIAP_ESTOQUE_SERVICE_URL:http://localhost:8082}
         fiap-pagamento-service:
-          url: ${FIAP_PAGAMENTO_SERVICE_URL:http://localhost:8084}
+          url: ${FIAP_PAGAMENTO_SERVICE_URL:http://localhost:8085}
 

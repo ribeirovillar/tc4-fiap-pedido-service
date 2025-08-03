@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,6 +31,11 @@ public class OrderJpaGateway implements OrderGateway {
     public Optional<Order> findOrderByOrderId(UUID orderId) {
         return orderRepository.findByOrderId(orderId)
                 .map(orderMapper::map);
+    }
+
+    @Override
+    public List<Order> findAll() {
+        return orderRepository.findAll().stream().map(orderMapper::map).toList();
     }
 
 }

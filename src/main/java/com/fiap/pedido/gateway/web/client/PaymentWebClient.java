@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.UUID;
-
 @Component
 public class PaymentWebClient {
 
@@ -19,7 +17,7 @@ public class PaymentWebClient {
         this.restTemplate = restTemplate;
     }
 
-    public UUID processPayment(PaymentDTO paymentDTO) {
-        return restTemplate.postForObject(url + "/payments", paymentDTO, UUID.class);
+    public PaymentDTO processPayment(PaymentDTO paymentDTO) {
+        return restTemplate.postForObject(url + "/payments", paymentDTO, PaymentDTO.class);
     }
 }

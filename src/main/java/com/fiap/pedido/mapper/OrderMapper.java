@@ -1,5 +1,6 @@
 package com.fiap.pedido.mapper;
 
+import com.fiap.pedido.controller.json.OrderDTO;
 import com.fiap.pedido.domain.Item;
 import com.fiap.pedido.domain.Order;
 import com.fiap.pedido.gateway.database.jpa.entity.OrderEntity;
@@ -21,7 +22,20 @@ public interface OrderMapper {
 
     Order map(OrderEntity orderEntity);
 
-    PaymentDTO mapToDto(Order order);
+    PaymentDTO mapToPaymentDTO(Order order);
+
+    @Mapping(source = "orderId", target = "id")
+    @Mapping(source = "customerId", target = "customer.id")
+    @Mapping(source = "customerName", target = "customer.name")
+    @Mapping(source = "customerCpf", target = "customer.cpf")
+    @Mapping(source = "cardNumber", target = "customer.cardNumber")
+    @Mapping(source = "paymentId", target = "payment.id")
+    @Mapping(source = "paymentStatus", target = "payment.status")
+    @Mapping(source = "paymentAmount", target = "payment.amount")
+    OrderDTO mapToOrderDTO(Order order);
+
+    @Mapping(target = "paymentId", source = "id")
+    Order map(PaymentDTO paymentDTO);
 
     @AfterMapping
     default void mapItems(Order order, @MappingTarget OrderEntity orderEntity) {
