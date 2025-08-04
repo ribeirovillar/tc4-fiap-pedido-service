@@ -65,29 +65,24 @@ class OrderConsumerTest {
     }
 
     @Test
-    void receiveOrder_WhenDeserializationFails_ShouldThrowRuntimeException() throws Exception {
+    void receiveOrder_WhenDeserializationFails_ShouldLogErrorAndNotCrash() throws Exception {
         RuntimeException deserializationException = new RuntimeException("Failed to parse order message");
         when(objectMapper.readValue(validOrderMessage, Order.class)).thenThrow(deserializationException);
 
-        RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> orderConsumer.receiveOrder(validOrderMessage));
+        assertDoesNotThrow(() -> orderConsumer.receiveOrder(validOrderMessage));
 
-        assertEquals("Failed to parse order message", exception.getMessage());
-        assertEquals(deserializationException, exception.getCause());
         verify(objectMapper, times(1)).readValue(validOrderMessage, Order.class);
         verify(processOrderUseCase, never()).execute(any(Order.class));
     }
 
     @Test
-    void receiveOrder_WhenProcessOrderUseCaseThrowsException_ShouldPropagateException() throws Exception {
+    void receiveOrder_WhenProcessOrderUseCaseThrowsException_ShouldLogErrorAndNotCrash() throws Exception {
         RuntimeException processException = new RuntimeException("Processing failed");
         when(objectMapper.readValue(validOrderMessage, Order.class)).thenReturn(testOrder);
         doThrow(processException).when(processOrderUseCase).execute(testOrder);
 
-        RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> orderConsumer.receiveOrder(validOrderMessage));
+        assertDoesNotThrow(() -> orderConsumer.receiveOrder(validOrderMessage));
 
-        assertEquals("Processing failed", exception.getMessage());
         verify(objectMapper, times(1)).readValue(validOrderMessage, Order.class);
         verify(processOrderUseCase, times(1)).execute(testOrder);
     }
@@ -98,25 +93,20 @@ class OrderConsumerTest {
         RuntimeException deserializationException = new RuntimeException("Failed to parse order message");
         when(objectMapper.readValue(emptyMessage, Order.class)).thenThrow(deserializationException);
 
-        RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> orderConsumer.receiveOrder(emptyMessage));
+        assertDoesNotThrow(() -> orderConsumer.receiveOrder(emptyMessage));
 
-        assertEquals("Failed to parse order message", exception.getMessage());
         verify(objectMapper, times(1)).readValue(emptyMessage, Order.class);
         verify(processOrderUseCase, never()).execute(any(Order.class));
     }
 
     @Test
-    void receiveOrder_WithInvalidJsonStructure_ShouldThrowRuntimeException() throws Exception {
+    void receiveOrder_WithInvalidJsonStructure_ShouldHandleGracefully() throws Exception {
         String invalidJson = "{invalid:json}";
         JsonMappingException deserializationException = new JsonMappingException("Malformed JSON");
         when(objectMapper.readValue(invalidJson, Order.class)).thenThrow(deserializationException);
 
-        RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> orderConsumer.receiveOrder(invalidJson));
+        assertDoesNotThrow(() -> orderConsumer.receiveOrder(invalidJson));
 
-        assertEquals("Failed to parse order message", exception.getMessage());
-        assertEquals(deserializationException, exception.getCause());
         verify(objectMapper, times(1)).readValue(invalidJson, Order.class);
         verify(processOrderUseCase, never()).execute(any(Order.class));
     }
