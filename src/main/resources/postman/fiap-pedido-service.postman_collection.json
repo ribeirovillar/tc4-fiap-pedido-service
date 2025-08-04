@@ -1,0 +1,63 @@
+{
+	"info": {
+		"_postman_id": "8e05344e-f262-4c3e-ad15-0293a2bb17c6",
+		"name": "fiap-pedido-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46530133"
+	},
+	"item": [
+		{
+			"name": "Get All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8084/orders",
+					"host": [
+						"http://localhost:8084"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get By Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8084/orders/a61bf513-f6f1-4d12-a664-994aadbbdb61",
+					"host": [
+						"http://localhost:8084"
+					],
+					"path": [
+						"orders",
+						"a61bf513-f6f1-4d12-a664-994aadbbdb61"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Process Payment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8084/payments/c124bdea-1931-4472-bb12-9f3599c9858d",
+					"host": [
+						"http://localhost:8084"
+					],
+					"path": [
+						"payments",
+						"c124bdea-1931-4472-bb12-9f3599c9858d"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
